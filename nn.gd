@@ -86,5 +86,7 @@ func feed_forward(input):
 	if ws.size() > 1:
 		for i in ws.size()-2:
 			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+	# output layer linear		
 	new_vec = multiply_vec(new_vec, ws[-1])
+	print("ws-1: ", ws[-1])
 	return new_vec

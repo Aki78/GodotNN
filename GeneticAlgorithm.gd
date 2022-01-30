@@ -1,27 +1,24 @@
 extends Node
 
-var in_size = 3
+var in_size = 1
 var out_size = 1
-var n_layers = 10
-var n_nodes = 10
+var n_layers = 3
+var n_nodes = 3
 
-var n_population = 1000
+var n_population = 10
 var population = []
 var children = []
-var select_deviation = 0.5
-var mutation_rate = 0.3
+var select_deviation = 0.01
+var mutation_rate = 0.001
 
-var inp = [1,2,3,4]
 var nn = preload("res://NN.tscn")
 
 func _ready():
 	randomize()
-	var fitness = [1,3,2]
+
+func init_ga():
 	init_pop(population)
 	init_pop(children)
-	for i in 1000:
-		mate(fitness)
-	print(population[0].ws)
 
 func init_pop(pop):
 	for i in n_population:
@@ -59,7 +56,7 @@ func rearrange_population(fitness):
 		var max_index = fitness.find(fitness.max())
 		arranged_population.append( population[max_index])
 		# replace the max value with a very low value so the next max can be found
-		fitness[max_index] = 1e-16
+		fitness[max_index] = -1e16
 	return arranged_population
 
 func select_population_index():
@@ -77,6 +74,12 @@ func swap_children_to_population():
 	for i in population.size():
 		population[i].ws = children[i].ws.duplicate(true)
 		population[i].bs = children[i].bs.duplicate(true)
+
+func get_outputs(inp):
+	var outputs = []
+	for i in population.size():
+		outputs.append(population[i].feed_forward(inp))
+	return outputs
 
 func mate(fitness):
 	population = rearrange_population(fitness)
