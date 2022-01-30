@@ -1,24 +1,32 @@
 extends Node
 
-var inps = [[0.1], [0.2], [0.3]]
-var outs = [[0.1], [0.2], [0.3]]
+var inps = [[-0.1], [0.1]]
+var outs = [[-0.1], [0.1]]
 var GA = preload("res://GeneticAlgorithm.tscn")
 var fitness = []
 var preds = []
 var ga = GA.instance()
 #since fitness has to be integer so it can rearrange in geneticl algorithm
-var scale_fitness = 100
+var scale_fitness = 1e10
 
+var max_ittr = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
 	ga.init_ga()
-	for i in 1000:
+	var initial_mut_rate = ga.mutation_rate
+	for i in max_ittr:
 		set_prediction()
 		get_fitness()
+		ga.mutation_rate = ga.mutation_rate -  initial_mut_rate/max_ittr
+		#print(ga.mutation_rate)
+		#print(fitness)
 		ga.mate(fitness)
    
-	print(preds)
+	#print(preds)
+	get_fitness()
+	print(fitness)
 
 func get_fitness():
 	fitness = []

@@ -46,7 +46,7 @@ func ones_vec(nX):
 func rand_vec(nX):
 	var vec = []
 	for _x in range(nX):
-		vec.append(rand_range(-1,1))
+		vec.append(rand_range(-0.1,0.1))
 	return vec
 
 func add_biases(vec, biases):
@@ -88,5 +88,4 @@ func feed_forward(input):
 			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
 	# output layer linear		
 	new_vec = multiply_vec(new_vec, ws[-1])
-	print("ws-1: ", ws[-1])
 	return new_vec
