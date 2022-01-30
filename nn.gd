@@ -4,7 +4,7 @@ var ws = []
 var bs = []
 
 func _ready():
-	pass;
+	randomize()
 
 func zeros_mat(nX, nY):
 	var mat = []
