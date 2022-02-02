@@ -28,7 +28,7 @@ func rand_mat(nY, nX):
 	for x in range(nX):
 		mat.append([])
 		for _y in range(nY):
-			mat[x].append(rand_range(-1,1))
+			mat[x].append(rand_range(-0.01,0.01))
 	return mat
 
 func zeros_vec(nX):
@@ -46,7 +46,7 @@ func ones_vec(nX):
 func rand_vec(nX):
 	var vec = []
 	for _x in range(nX):
-		vec.append(rand_range(-0.1,0.1))
+		vec.append(rand_range(-0.01,0.01))
 	return vec
 
 func add_biases(vec, biases):
@@ -81,6 +81,12 @@ func act_tanh(vec):
 		act_vec.append(tanh(vec[i]))
 	return act_vec
 
+func act_relu(vec):
+	var act_vec = []
+	for i in vec.size():
+		act_vec.append(relu(vec[i]))
+	return act_vec
+
 func feed_forward(input):
 	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
@@ -89,3 +95,9 @@ func feed_forward(input):
 	# output layer linear		
 	new_vec = multiply_vec(new_vec, ws[-1])
 	return new_vec
+
+
+func relu(x):
+	if x > 0:
+		return x
+	return 0

@@ -1,7 +1,6 @@
 extends Node
-
-var inps = [[-0.1], [0.1]]
-var outs = [[-0.1], [0.1]]
+var inps = []
+var outs = []
 var GA = preload("res://GeneticAlgorithm.tscn")
 var fitness = []
 var preds = []
@@ -13,20 +12,41 @@ var max_ittr = 1000
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	#inps = [[-1], [1]]
+	#outs = [[-10], [10]]
+	var x = 0
+	for i in 20:
+		inps.append([x])
+		outs.append([10*sin(x)])
+		x += 0.1
+
 	randomize()
 	ga.init_ga()
 	var initial_mut_rate = ga.mutation_rate
 	for i in max_ittr:
+		print("itter: ", i)
 		set_prediction()
 		get_fitness()
 		ga.mutation_rate = ga.mutation_rate -  initial_mut_rate/max_ittr
 		#print(ga.mutation_rate)
 		#print(fitness)
-		ga.mate(fitness)
+		ga.mate(inps,fitness)
    
-	#print(preds)
 	get_fitness()
+	print(outs)
+	print(ga.best_pred)
 	print(fitness)
+	save_level()
+
+func save_level():
+	var save_file = File.new()
+	save_file.open("res://savefile_compiled.save", File.WRITE)
+	save_file.store_line(str(outs))
+	save_file.store_line(str(ga.best_pred))
+	save_file.store_line(str(fitness))
+	save_file.store_line(str(ga.best_nn.ws))
+	save_file.store_line(str(ga.best_nn.bs))
+	save_file.close()
 
 func get_fitness():
 	fitness = []
