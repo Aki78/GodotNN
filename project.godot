@@ -16,12 +16,16 @@ _global_script_class_icons={
 [application]
 
 config/name="NN"
-run/main_scene="res://ML.tscn"
+run/main_scene="res://board.tscn"
 config/icon="res://icon.png"
 
 [debug]
 
 settings/profiler/max_functions=65535
+
+[physics]
+
+2d/default_linear_damp=0.0
 
 [rendering]
 

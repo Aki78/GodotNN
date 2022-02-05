@@ -1,11 +1,11 @@
 extends Node
 
-var in_size = 1
+var in_size = 3
 var out_size = 1
-var n_layers = 5
-var n_nodes = 5
+var n_layers = 3
+var n_nodes = 3
 
-var n_population = 2000
+var n_population = 100
 var population = []
 var children = []
 var select_deviation = 0.5
@@ -14,7 +14,7 @@ var best_pred = []
 
 var best_nn
 
-var nn = preload("res://NN.tscn")
+var nn = preload("res://Scenes/NN.tscn")
 
 func _ready():
 	randomize()
@@ -51,6 +51,16 @@ func mutate_weights(ws):
 					ws[i][j][k] = 5
 				elif ws[i][j][k] < -5:
 					ws[i][j][k] = -5
+func set_weights_and_biases(weights, biases):
+	#add a gaussian distributed value to each dna sequence
+	for p in population.size():
+		for i in weights.size():
+			for j in weights[i].size():
+				for k in weights[i][j].size():
+					population[p].ws[i][j][k] = weights[i][j][k]
+		for i in biases.size():
+			for j in biases[i].size():
+				population[p].bs[i][j] = biases[i][j] 
 
 func mutate_biases(bs):
 	#add a gaussian distributed value to each dna sequence
@@ -90,6 +100,8 @@ func swap_children_to_population():
 	for i in population.size():
 		population[i].ws = children[i].ws.duplicate(true)
 		population[i].bs = children[i].bs.duplicate(true)
+		#if i == population.size() - 1:
+			#get_tree().paused = false
 
 func get_outputs(inp):
 	var outputs = []
@@ -102,9 +114,10 @@ func get_best(fitness):
 	return population[max_index]
 
 
-func mate(input, fitness):
+func mate(fitness):
+	get_tree().paused = true
+	
 	population = rearrange_population(fitness)
-	best_pred = []
 	for i in population.size():
 		var i1 = select_population_index()
 		var i2 = select_population_index()
@@ -112,7 +125,7 @@ func mate(input, fitness):
 		children[i].bs = swap_dna(population[i1].bs, population[i2].bs)
 		mutate_weights(children[i].ws)
 		mutate_biases(children[i].bs)
+		print(i)
 	swap_children_to_population()
-	best_nn = get_best(fitness)
-	for i in input.size():
-		best_pred.append( best_nn.feed_forward(input[i]))
+	get_tree().paused = false
+	#get_tree().paused = false

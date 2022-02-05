@@ -1,7 +1,7 @@
 extends Node
 var inps = []
 var outs = []
-var GA = preload("res://GeneticAlgorithm.tscn")
+var GA = preload("res://Scenes/GeneticAlgorithm.tscn")
 var fitness = []
 var preds = []
 var ga = GA.instance()
@@ -15,7 +15,7 @@ func _ready():
 	#inps = [[-1], [1]]
 	#outs = [[-10], [10]]
 	var x = 0
-	for i in 20:
+	for i in 10:
 		inps.append([x])
 		outs.append([10*sin(x)])
 		x += 0.1
@@ -24,7 +24,7 @@ func _ready():
 	ga.init_ga()
 	var initial_mut_rate = ga.mutation_rate
 	for i in max_ittr:
-		print("itter: ", i)
+		#print("itter: ", i)
 		set_prediction()
 		get_fitness()
 		ga.mutation_rate = ga.mutation_rate -  initial_mut_rate/max_ittr

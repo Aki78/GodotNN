@@ -28,7 +28,7 @@ func rand_mat(nY, nX):
 	for x in range(nX):
 		mat.append([])
 		for _y in range(nY):
-			mat[x].append(rand_range(-0.01,0.01))
+			mat[x].append(rand_range(-0.1,0.1))
 	return mat
 
 func zeros_vec(nX):
