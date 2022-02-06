@@ -118,6 +118,34 @@ func feed_forward(input):
 	new_vec = multiply_vec(new_vec, ws[-1])
 	return new_vec
 
+# nn with an extra softmax layer
+func feed_forward_softmax(input):
+	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
+	if ws.size() > 1:
+		for i in ws.size()-2:
+			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+	# output layer softmax, ignoring the last layer of ws[-1] dangling		
+	new_vec = act_tanh(multiply_vec(new_vec, ws[-1]))
+	new_vec = softmax(new_vec)
+	#print(new_vec)
+	return new_vec
+
+func softmax(vec):
+	var e_x = vec.duplicate(true)
+	var my_max = vec.max()
+	for i in vec.size():
+		e_x[i] = exp(vec[i] - my_max)
+	var my_sum = sum(e_x)
+	for i in vec.size():
+		e_x[i] = e_x[i]/my_sum
+
+	return e_x 
+
+func sum(vec):
+	var sum = 0
+	for i in vec.size():
+		sum += vec[i]
+	return sum
 
 func relu(x):
 	if x > 0:

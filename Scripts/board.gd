@@ -33,8 +33,8 @@ func _ready():
 	print(best_weights1) 
 	ga1.init_ga()
 	ga2.init_ga()
-	ga1.set_weights_and_biases(best_weights1, best_biases1)
-	ga2.set_weights_and_biases(best_weights2, best_biases2)
+	#ga1.set_weights_and_biases(best_weights1, best_biases1)
+	#ga2.set_weights_and_biases(best_weights2, best_biases2)
 	add_child(ga1)
 	add_child(ga2)
 	ball = get_node("ball")
@@ -120,25 +120,37 @@ func load_json():
 			best_biases1 = dict["best1b"]
 			best_biases2 = dict["best2b"]
 
+func  find_max_index(vec):
+	var scale = 10000000000
+	var scaled_list = vec.duplicate(true)
+	for i in vec.size():
+		scaled_list[i] = round(scale*vec[i])
+	return scaled_list.find(scaled_list.max())
+	
+
+
 func _physics_process(delta):
 	game()
-	#ittr += 1
-	#print(ittr)
 	var paddle1 = get_node("paddle")
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
-	var press_direction1 = current_nn1.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+
+	var press_direction1 = current_nn1.feed_forward_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
-	var press_direction2 = current_nn2.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+
+	var press_direction2 = current_nn2.feed_forward_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
-	press_direction1 = press_direction1[0]
-	press_direction2 = press_direction2[0]
-	if press_direction1 > 0:
+
+	#print(press_direction1)
+	#print(press_direction2)
+	press_direction1 = find_max_index(press_direction1)
+	press_direction2 = find_max_index(press_direction2)
+	if press_direction1 == 0:
 		paddle1.control(+1)
 	else:
 		paddle1.control(-1)
 
-	if press_direction2 > 0:
+	if press_direction2 == 0:
 		paddle2.control(+1)
 	else:
 		paddle2.control(-1)

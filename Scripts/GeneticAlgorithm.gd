@@ -1,7 +1,7 @@
 extends Node
 
 var in_size = 6
-var out_size = 1
+var out_size = 2
 var n_layers = 3
 var n_nodes = 3
 
@@ -9,7 +9,7 @@ var n_population = 100
 var population = []
 var children = []
 var select_deviation = 0.5
-var mutation_rate = 0.001
+var mutation_rate = 0.0001
 var best_pred = []
 
 var best_nn
