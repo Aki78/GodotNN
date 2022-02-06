@@ -1,6 +1,6 @@
 extends Node
 
-var in_size = 3
+var in_size = 6
 var out_size = 1
 var n_layers = 3
 var n_nodes = 3
@@ -77,11 +77,12 @@ func mutate_biases(bs):
 
 func rearrange_population(fitness):
 	var arranged_population = []
+	var fitness_buff = fitness.duplicate(true)
 	for i in fitness.size():
-		var max_index = fitness.find(fitness.max())
+		var max_index = fitness_buff.find(fitness_buff.max())
 		arranged_population.append( population[max_index])
 		# replace the max value with a very low value so the next max can be found
-		fitness[max_index] = -1e16
+		fitness_buff[max_index] = -1e16
 	return arranged_population
 
 func select_population_index():

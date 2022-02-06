@@ -8,45 +8,53 @@ func _ready():
 
 func zeros_mat(nX, nY):
 	var mat = []
-	for x in range(nX):
+	for x in nX:
 		mat.append([])
-		for _y in range(nY):
+		for _y in nY:
 			mat[x].append(0)
 	return mat
 
 func ones_mat(nY, nX):
 	var mat = []
-	for x in range(nX):
+	for x in nX:
 		mat.append([])
-		for _y in range(nY):
+		for _y in nY:
 			mat[x].append(1)
 	return mat
 
 
 func rand_mat(nY, nX):
 	var mat = []
-	for x in range(nX):
+	for x in nX:
 		mat.append([])
-		for _y in range(nY):
-			mat[x].append(rand_range(-0.1,0.1))
+		for _y in nY:
+			mat[x].append(rand_range(-1,1))
+	return mat
+
+func one_mat(nY, nX):
+	var mat = []
+	for x in nX:
+		mat.append([])
+		for _y in nY:
+			mat[x].append(1)
 	return mat
 
 func zeros_vec(nX):
 	var vec = []
-	for _x in range(nX):
+	for _x in nX:
 		vec.append(0)
 	return vec
 
 func ones_vec(nX):
 	var vec = []
-	for _x in range(nX):
+	for _x in nX:
 		vec.append(1)
 	return vec
 
 func rand_vec(nX):
 	var vec = []
-	for _x in range(nX):
-		vec.append(rand_range(-0.01,0.01))
+	for _x in nX:
+		vec.append(rand_range(-1,1))
 	return vec
 
 func add_biases(vec, biases):
@@ -68,10 +76,24 @@ func init_biases(n_node, n_layer):
 		for i in n_layer - 1:
 			bs.append(rand_vec(n_node))
 
+
+func init_weights_ones(in_size, out_size, n_node, n_layer):
+	ws.append(one_mat(in_size, n_node))
+	if n_layer > 1:
+		for i in n_layer - 1:
+			ws.append(one_mat(n_node,n_node))
+	ws.append(one_mat(n_node, out_size))
+
+func init_biases_ones(n_node, n_layer):
+	bs.append(ones_vec(n_node))
+	if n_layer > 1:
+		for i in n_layer - 1:
+			bs.append(ones_vec(n_node))
+
 func multiply_vec(vec, mat):
 	var new_vec = zeros_vec(mat.size())
-	for i in range(new_vec.size()):
-		for j in range(mat[0].size()): # !!![0]?
+	for i in new_vec.size():
+		for j in mat[0].size(): # !!![0]?
 			new_vec[i] = new_vec[i] + vec[j] * mat[i][j]
 	return new_vec
 

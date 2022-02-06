@@ -127,8 +127,10 @@ func _physics_process(delta):
 	var paddle1 = get_node("paddle")
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
-	var press_direction1 = current_nn1.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y])
-	var press_direction2 = current_nn2.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y])
+	var press_direction1 = current_nn1.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
+	var press_direction2 = current_nn2.feed_forward([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 	press_direction1 = press_direction1[0]
 	press_direction2 = press_direction2[0]
 	if press_direction1 > 0:
