@@ -2,8 +2,8 @@ extends Node
 
 var in_size = 6
 var out_size = 2
-var n_layers = 3
-var n_nodes = 3
+var n_layers = 5
+var n_nodes = 5
 
 var n_population = 100
 var population = []

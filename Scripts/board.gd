@@ -10,7 +10,7 @@ var current_nn2
 var fitness1 = []
 var fitness2 = []
 var gen_ittr = 1
-var physics_ittr = 5000
+var physics_ittr = 10000
 var popI = 0
 var phiI = 0
 var ball
@@ -21,6 +21,8 @@ var best_weights1 = []
 var best_weights2 = []
 var best_biases1 = []
 var best_biases2 = []
+var total_counts1 = 1
+var total_counts = 1
 
 var save_path =  "res://savefile_bests.save"
 
@@ -33,8 +35,8 @@ func _ready():
 	print(best_weights1) 
 	ga1.init_ga()
 	ga2.init_ga()
-	#ga1.set_weights_and_biases(best_weights1, best_biases1)
-	#ga2.set_weights_and_biases(best_weights2, best_biases2)
+	ga1.set_weights_and_biases(best_weights1, best_biases1)
+	ga2.set_weights_and_biases(best_weights2, best_biases2)
 	add_child(ga1)
 	add_child(ga2)
 	ball = get_node("ball")
@@ -131,6 +133,7 @@ func  find_max_index(vec):
 
 func _physics_process(delta):
 	game()
+	total_counts += 1
 	var paddle1 = get_node("paddle")
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
@@ -143,9 +146,12 @@ func _physics_process(delta):
 
 	#print(press_direction1)
 	#print(press_direction2)
-	press_direction1 = find_max_index(press_direction1)
-	press_direction2 = find_max_index(press_direction2)
+	#press_direction1 = find_max_index(press_direction1)
+	#press_direction2 = find_max_index(press_direction2)
+	press_direction1 = current_nn1.choice2_idx(press_direction1)
+	press_direction2 = current_nn2.choice2_idx(press_direction2)
 	if press_direction1 == 0:
+		total_counts1 += 1
 		paddle1.control(+1)
 	else:
 		paddle1.control(-1)

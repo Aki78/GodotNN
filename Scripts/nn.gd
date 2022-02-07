@@ -147,6 +147,23 @@ func sum(vec):
 		sum += vec[i]
 	return sum
 
+func cdf(vec):
+	var total = sum(vec)
+	var result = []
+	var cumsum = 0
+	for w in vec.size():
+		cumsum += vec[w]
+		result.append(cumsum / total)
+	return result
+
+func choice2_idx(prop_vec):
+	var cdf_vals = cdf(prop_vec)
+	var x = rand_range(0, 1)
+	if x < cdf_vals[0]:
+		return 0
+	else:
+		return 1
+
 func relu(x):
 	if x > 0:
 		return x
