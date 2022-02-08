@@ -2,15 +2,18 @@ extends Node
 
 var in_size = 6
 var out_size = 2
-var n_layers = 5
-var n_nodes = 5
+var n_layers = 2
+var n_nodes = 2
 
 var n_population = 100
 var population = []
 var children = []
 var select_deviation = 0.5
-var mutation_rate = 0.0001
+var mutation_rate = 0.001
 var best_pred = []
+var total_nodes
+var clamp_val = 5
+var mutation_size = 0.5
 
 var best_nn
 
@@ -18,6 +21,11 @@ var nn = preload("res://Scenes/NN.tscn")
 
 func _ready():
 	randomize()
+	total_nodes = get_param_numb()
+	print(total_nodes)
+
+func get_param_numb():
+	return in_size*n_nodes + n_layers*n_nodes*n_nodes + n_nodes*out_size
 
 func init_ga():
 	init_pop(population)
@@ -45,12 +53,12 @@ func mutate_weights(ws):
 		for j in ws[i].size():
 			for k in ws[i][j].size():
 				ws[i][j][k] += rng.randfn(-mutation_rate,mutation_rate)
-				if randi() % 100 == 0:
-					ws[i][j][k] += rng.randfn(-1,1)
-				if ws[i][j][k] > 5:
-					ws[i][j][k] = 5
-				elif ws[i][j][k] < -5:
-					ws[i][j][k] = -5
+				if randi() % total_nodes == 0:
+					ws[i][j][k] += rng.randfn(-mutation_size,mutation_size)
+				if ws[i][j][k] > clamp_val:
+					ws[i][j][k] = clamp_val
+				elif ws[i][j][k] < -clamp_val:
+					ws[i][j][k] = -clamp_val
 func set_weights_and_biases(weights, biases):
 	#add a gaussian distributed value to each dna sequence
 	for p in population.size():
@@ -68,12 +76,12 @@ func mutate_biases(bs):
 	for i in bs.size():
 		for j in bs[i].size():
 			bs[i][j] += rng.randfn(-mutation_rate,mutation_rate)
-			if randi() % 100 == 0:
-				bs[i][j] += rng.randfn(-1,1)
-			if bs[i][j] > 5:
-				bs[i][j] = 5
-			elif bs[i][j] < -5:
-				bs[i][j] = -5
+			if randi() % total_nodes == 0:
+				bs[i][j] += rng.randfn(-mutation_size,mutation_size)
+			if bs[i][j] > clamp_val:
+				bs[i][j] = clamp_val
+			elif bs[i][j] < -clamp_val:
+				bs[i][j] = -clamp_val
 
 func rearrange_population(fitness):
 	var arranged_population = []

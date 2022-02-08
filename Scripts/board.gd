@@ -35,8 +35,8 @@ func _ready():
 	print(best_weights1) 
 	ga1.init_ga()
 	ga2.init_ga()
-	ga1.set_weights_and_biases(best_weights1, best_biases1)
-	ga2.set_weights_and_biases(best_weights2, best_biases2)
+	#ga1.set_weights_and_biases(best_weights1, best_biases1)
+	#ga2.set_weights_and_biases(best_weights2, best_biases2)
 	add_child(ga1)
 	add_child(ga2)
 	ball = get_node("ball")
@@ -138,14 +138,14 @@ func _physics_process(delta):
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
 
-	var press_direction1 = current_nn1.feed_forward_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+	var press_direction1 = current_nn1.feed_forward_lin_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 
-	var press_direction2 = current_nn2.feed_forward_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
+	var press_direction2 = current_nn2.feed_forward_lin_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 
-	#print(press_direction1)
-	#print(press_direction2)
+	print(press_direction1)
+	print(press_direction2)
 	#press_direction1 = find_max_index(press_direction1)
 	#press_direction2 = find_max_index(press_direction2)
 	press_direction1 = current_nn1.choice2_idx(press_direction1)

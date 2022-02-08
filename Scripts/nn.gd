@@ -3,6 +3,8 @@ extends Node
 var ws = []
 var bs = []
 
+var random_width = 3
+
 func _ready():
 	randomize()
 
@@ -28,7 +30,7 @@ func rand_mat(nY, nX):
 	for x in nX:
 		mat.append([])
 		for _y in nY:
-			mat[x].append(rand_range(-1,1))
+			mat[x].append(rand_range(-random_width,random_width))
 	return mat
 
 func one_mat(nY, nX):
@@ -54,7 +56,7 @@ func ones_vec(nX):
 func rand_vec(nX):
 	var vec = []
 	for _x in nX:
-		vec.append(rand_range(-1,1))
+		vec.append(rand_range(-random_width,random_width))
 	return vec
 
 func add_biases(vec, biases):
@@ -109,7 +111,7 @@ func act_relu(vec):
 		act_vec.append(relu(vec[i]))
 	return act_vec
 
-func feed_forward(input):
+func feed_forward_lin(input):
 	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
 		for i in ws.size()-2:
@@ -118,8 +120,18 @@ func feed_forward(input):
 	new_vec = multiply_vec(new_vec, ws[-1])
 	return new_vec
 
+func feed_forward_lin_softmax(input):
+	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
+	if ws.size() > 1:
+		for i in ws.size()-2:
+			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+	# output layer linear		
+	new_vec = multiply_vec(new_vec, ws[-1])
+	new_vec = softmax(new_vec)
+	return new_vec
+
 # nn with an extra softmax layer
-func feed_forward_softmax(input):
+func feed_forward_tanh_softmax(input):
 	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
 		for i in ws.size()-2:
