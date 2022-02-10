@@ -120,6 +120,7 @@ func feed_forward_lin(input):
 	new_vec = multiply_vec(new_vec, ws[-1])
 	return new_vec
 
+
 func feed_forward_lin_softmax(input):
 	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
@@ -127,6 +128,17 @@ func feed_forward_lin_softmax(input):
 			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
 	# output layer linear		
 	new_vec = multiply_vec(new_vec, ws[-1])
+	new_vec = softmax(new_vec)
+	return new_vec
+
+
+func feed_forward_relu_softmax(input):
+	var new_vec = act_relu(add_biases(multiply_vec(input, ws[0]), bs[0]))
+	if ws.size() > 1:
+		for i in ws.size()-2:
+			new_vec = act_relu(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+	# output layer linear		
+	new_vec = act_relu(multiply_vec(new_vec, ws[-1]))
 	new_vec = softmax(new_vec)
 	return new_vec
 

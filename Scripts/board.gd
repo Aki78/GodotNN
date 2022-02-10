@@ -10,7 +10,7 @@ var current_nn2
 var fitness1 = []
 var fitness2 = []
 var gen_ittr = 1
-var physics_ittr = 10000
+var physics_ittr = 5000
 var popI = 0
 var phiI = 0
 var ball
@@ -138,18 +138,18 @@ func _physics_process(delta):
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
 
-	var press_direction1 = current_nn1.feed_forward_lin_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+	var press_direction1 = current_nn1.feed_forward_relu_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 
-	var press_direction2 = current_nn2.feed_forward_lin_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
+	var press_direction2 = current_nn2.feed_forward_relu_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 
-	print(press_direction1)
-	print(press_direction2)
-	#press_direction1 = find_max_index(press_direction1)
-	#press_direction2 = find_max_index(press_direction2)
-	press_direction1 = current_nn1.choice2_idx(press_direction1)
-	press_direction2 = current_nn2.choice2_idx(press_direction2)
+	#print(press_direction1)
+	#print(press_direction2)
+	press_direction1 = find_max_index(press_direction1)
+	press_direction2 = find_max_index(press_direction2)
+	#press_direction1 = current_nn1.choice2_idx(press_direction1)
+	#press_direction2 = current_nn2.choice2_idx(press_direction2)
 	if press_direction1 == 0:
 		total_counts1 += 1
 		paddle1.control(+1)

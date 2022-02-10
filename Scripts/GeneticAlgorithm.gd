@@ -2,8 +2,8 @@ extends Node
 
 var in_size = 6
 var out_size = 2
-var n_layers = 2
-var n_nodes = 2
+var n_layers = 3
+var n_nodes = 3
 
 var n_population = 100
 var population = []
@@ -12,8 +12,9 @@ var select_deviation = 0.5
 var mutation_rate = 0.001
 var best_pred = []
 var total_nodes
-var clamp_val = 5
-var mutation_size = 0.5
+var clamp_val = 3
+var mutation_size = 1
+var mutation_freq 
 
 var best_nn
 
@@ -22,6 +23,8 @@ var nn = preload("res://Scenes/NN.tscn")
 func _ready():
 	randomize()
 	total_nodes = get_param_numb()
+	print("total nodes: ", total_nodes)
+	mutation_freq = total_nodes
 	print(total_nodes)
 
 func get_param_numb():
@@ -53,7 +56,7 @@ func mutate_weights(ws):
 		for j in ws[i].size():
 			for k in ws[i][j].size():
 				ws[i][j][k] += rng.randfn(-mutation_rate,mutation_rate)
-				if randi() % total_nodes == 0:
+				if randi() % mutation_freq == 0:
 					ws[i][j][k] += rng.randfn(-mutation_size,mutation_size)
 				if ws[i][j][k] > clamp_val:
 					ws[i][j][k] = clamp_val
@@ -76,7 +79,7 @@ func mutate_biases(bs):
 	for i in bs.size():
 		for j in bs[i].size():
 			bs[i][j] += rng.randfn(-mutation_rate,mutation_rate)
-			if randi() % total_nodes == 0:
+			if randi() % mutation_freq == 0:
 				bs[i][j] += rng.randfn(-mutation_size,mutation_size)
 			if bs[i][j] > clamp_val:
 				bs[i][j] = clamp_val
