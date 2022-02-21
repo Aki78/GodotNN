@@ -3,7 +3,7 @@ extends Node
 var ws = []
 var bs = []
 
-var random_width = 3
+var random_width = 2.0
 
 func _ready():
 	randomize()
@@ -72,25 +72,27 @@ func init_weights(in_size, out_size, n_node, n_layer):
 			ws.append(rand_mat(n_node,n_node))
 	ws.append(rand_mat(n_node, out_size))
 
-func init_biases(n_node, n_layer):
+func init_biases(out_size, n_node, n_layer):
 	bs.append(rand_vec(n_node))
 	if n_layer > 1:
-		for i in n_layer - 1:
+		for i in n_layer - 1: # Do not include the last layer
 			bs.append(rand_vec(n_node))
+	bs.append(rand_vec(out_size))
 
 
 func init_weights_ones(in_size, out_size, n_node, n_layer):
 	ws.append(one_mat(in_size, n_node))
 	if n_layer > 1:
-		for i in n_layer - 1:
+		for i in n_layer:
 			ws.append(one_mat(n_node,n_node))
 	ws.append(one_mat(n_node, out_size))
 
-func init_biases_ones(n_node, n_layer):
+func init_biases_ones(out_size,n_node, n_layer):
 	bs.append(ones_vec(n_node))
 	if n_layer > 1:
 		for i in n_layer - 1:
 			bs.append(ones_vec(n_node))
+	bs.append(ones_vec(out_size))
 
 func multiply_vec(vec, mat):
 	var new_vec = zeros_vec(mat.size())
@@ -112,22 +114,23 @@ func act_relu(vec):
 	return act_vec
 
 func feed_forward_lin(input):
-	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
+	var new_vec = act_relu(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
 		for i in ws.size()-2:
-			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+			new_vec = act_relu(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
 	# output layer linear		
 	new_vec = multiply_vec(new_vec, ws[-1])
 	return new_vec
 
 
 func feed_forward_lin_softmax(input):
-	var new_vec = act_tanh(add_biases(multiply_vec(input, ws[0]), bs[0]))
+	var new_vec = act_relu(add_biases(multiply_vec(input, ws[0]), bs[0]))
 	if ws.size() > 1:
 		for i in ws.size()-2:
-			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
-	# output layer linear		
+			new_vec = act_relu(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
+	# output layer linear	no biases
 	new_vec = multiply_vec(new_vec, ws[-1])
+	#print("lin: ", new_vec)
 	new_vec = softmax(new_vec)
 	return new_vec
 
@@ -138,7 +141,7 @@ func feed_forward_relu_softmax(input):
 		for i in ws.size()-2:
 			new_vec = act_relu(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
 	# output layer linear		
-	new_vec = act_relu(multiply_vec(new_vec, ws[-1]))
+	new_vec = act_relu(add_biases(multiply_vec(new_vec, ws[-1]), bs[-1]))
 	new_vec = softmax(new_vec)
 	return new_vec
 
@@ -149,7 +152,8 @@ func feed_forward_tanh_softmax(input):
 		for i in ws.size()-2:
 			new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[i+1]), bs[i+1]))
 	# output layer softmax, ignoring the last layer of ws[-1] dangling		
-	new_vec = act_tanh(multiply_vec(new_vec, ws[-1]))
+	new_vec = act_tanh(add_biases(multiply_vec(new_vec, ws[-1]), bs[-1]))
+	#print("tanh: ", new_vec)
 	new_vec = softmax(new_vec)
 	#print(new_vec)
 	return new_vec

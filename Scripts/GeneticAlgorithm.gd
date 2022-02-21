@@ -2,18 +2,18 @@ extends Node
 
 var in_size = 6
 var out_size = 2
-var n_layers = 3
-var n_nodes = 3
+var n_layers = 5
+var n_nodes = 5
 
 var n_population = 100
 var population = []
 var children = []
-var select_deviation = 0.5
-var mutation_rate = 0.001
+var select_deviation = 1.0
+var mutation_rate = 0.0001
 var best_pred = []
 var total_nodes
 var clamp_val = 3
-var mutation_size = 1
+var mutation_size = 1.0
 var mutation_freq 
 
 var best_nn
@@ -38,7 +38,7 @@ func init_pop(pop):
 	for i in n_population:
 		var new_nn = nn.instance()
 		new_nn.init_weights(in_size, out_size, n_nodes, n_layers)
-		new_nn.init_biases(n_nodes, n_layers)
+		new_nn.init_biases(out_size, n_nodes, n_layers)
 		pop.append(new_nn)
 
 func swap_dna(a,b):
@@ -55,9 +55,9 @@ func mutate_weights(ws):
 	for i in ws.size():
 		for j in ws[i].size():
 			for k in ws[i][j].size():
-				ws[i][j][k] += rng.randfn(-mutation_rate,mutation_rate)
+				ws[i][j][k] += rng.randfn(0,mutation_rate)
 				if randi() % mutation_freq == 0:
-					ws[i][j][k] += rng.randfn(-mutation_size,mutation_size)
+					ws[i][j][k] += rng.randfn(0,mutation_size)
 				if ws[i][j][k] > clamp_val:
 					ws[i][j][k] = clamp_val
 				elif ws[i][j][k] < -clamp_val:
@@ -78,9 +78,9 @@ func mutate_biases(bs):
 	var rng = RandomNumberGenerator.new()
 	for i in bs.size():
 		for j in bs[i].size():
-			bs[i][j] += rng.randfn(-mutation_rate,mutation_rate)
+			bs[i][j] += rng.randfn(0,mutation_rate)
 			if randi() % mutation_freq == 0:
-				bs[i][j] += rng.randfn(-mutation_size,mutation_size)
+				bs[i][j] += rng.randfn(0,mutation_size)
 			if bs[i][j] > clamp_val:
 				bs[i][j] = clamp_val
 			elif bs[i][j] < -clamp_val:
@@ -103,7 +103,7 @@ func select_population_index():
 		# get index from gaussian distribution for only the positive side with sigma of the end of pop list
 		rng.seed = hash("Godot")
 		rng.seed = randi()
-		var gauss_val = rng.randfn(0,select_deviation*population.size())
+		var gauss_val = rng.randfn(0, select_deviation*population.size())
 		var selected_index =round(abs(gauss_val))
 		if selected_index < population.size():
 			return selected_index

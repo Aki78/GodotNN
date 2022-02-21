@@ -138,11 +138,13 @@ func _physics_process(delta):
 	var paddle2 = get_node("paddle2")
 	var ball_pos = ball.position
 
-	var press_direction1 = current_nn1.feed_forward_relu_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
+	var press_direction1 = current_nn1.feed_forward_tanh_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y,\
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
 
-	var press_direction2 = current_nn2.feed_forward_relu_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
+	var press_direction2 = current_nn2.feed_forward_tanh_softmax([0.01*ball_pos.x, 0.01*ball_pos.y, 0.01*paddle1.position.y, 0.01*paddle2.position.y, \
 	0.01*ball.linear_velocity.x, 0.01*ball.linear_velocity.y])
+	#print(current_nn1.bs)
+	#print(current_nn2.bs)
 
 	#print(press_direction1)
 	#print(press_direction2)
